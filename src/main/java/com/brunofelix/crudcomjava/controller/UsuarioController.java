@@ -42,12 +42,25 @@ public class UsuarioController {
     }
 
     @DeleteMapping("/deletar/{id}")
-    public ResponseEntity<Object> DeletarUsuario(@PathVariable(value = "id") Long id) {
+    public ResponseEntity<Object> deletarUsuario(@PathVariable(value = "id") Long id) {
         Optional<Usuario> optionalUsuario = usuarioService.buscarId(id);
         if (!optionalUsuario.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario não encontrado!");
         }
         usuarioService.deletarUsuario(optionalUsuario.get());
         return ResponseEntity.status(HttpStatus.OK).body("Usuario deletado com sucesso");
+    }
+
+    @PutMapping("atualizar/{id}")
+    public ResponseEntity<Object> atualizarUsuario(@PathVariable(value = "id") Long id,
+                                                   @RequestBody Usuario u) {
+        Optional<Usuario> optionalUsuario = usuarioService.buscarId(id);
+        if (!optionalUsuario.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario não encontrado!");
+        }
+        var usuario = new Usuario();
+        BeanUtils.copyProperties(u, usuario);
+        usuario.setId(optionalUsuario.get().getId());
+        return ResponseEntity.status(HttpStatus.OK).body(usuarioService.salvar(usuario));
     }
 }
