@@ -1,9 +1,13 @@
 package com.brunofelix.crudcomjava.controller;
 
+import com.brunofelix.crudcomjava.model.Usuario;
 import com.brunofelix.crudcomjava.service.UsuarioService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.BeanUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -15,8 +19,16 @@ public class UsuarioController {
         this.usuarioService = usuarioService;
     }
 
-    @GetMapping
-    public String index() {
-        return "deu certo";
+    @PostMapping("/salvarUsuario") /* salvar usuario no banco */
+    public ResponseEntity<Object> salvarUsuario(@RequestBody Usuario u) {
+        Usuario usuario = new Usuario();
+        BeanUtils.copyProperties(u, usuario);
+        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.salvar(usuario));
     }
+
+    @GetMapping("/listarTodos")
+    public ResponseEntity<List<Usuario>> listarTodos() {
+        return ResponseEntity.status(HttpStatus.OK).body(usuarioService.listarTodos());
+    }
+
 }
