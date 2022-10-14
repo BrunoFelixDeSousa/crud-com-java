@@ -5,6 +5,7 @@ import com.brunofelix.crudcomjava.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UsuarioService {
@@ -22,5 +23,10 @@ public class UsuarioService {
 
     public List<Usuario> listarTodos() {
         return usuarioRepository.findAll();
+    }
+
+
+    public Optional<Usuario> buscarId(Long id) {
+        return usuarioRepository.findById(id);
     }
 }

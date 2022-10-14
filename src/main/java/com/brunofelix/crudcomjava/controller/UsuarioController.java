@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -31,4 +32,13 @@ public class UsuarioController {
         return ResponseEntity.status(HttpStatus.OK).body(usuarioService.listarTodos());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> buscarId(@PathVariable(value = "id") Long id) {
+        Optional<Usuario> optionalUsuario = usuarioService.buscarId(id);
+        System.out.println(optionalUsuario);
+        if (!optionalUsuario.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario não encontrado!");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(optionalUsuario.get());
+    }
 }
