@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/usuarios")
+@RequestMapping("/usuario")
 public class UsuarioController {
 
     final UsuarioService usuarioService;
@@ -20,14 +20,14 @@ public class UsuarioController {
         this.usuarioService = usuarioService;
     }
 
-    @PostMapping("/salvarUsuario") /* salvar usuario no banco */
+    @PostMapping("/salvar") /* salvar usuario no banco */
     public ResponseEntity<Object> salvarUsuario(@RequestBody Usuario u) {
         Usuario usuario = new Usuario();
         BeanUtils.copyProperties(u, usuario);
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.salvar(usuario));
     }
 
-    @GetMapping("/listarTodos")
+    @GetMapping("/listar")
     public ResponseEntity<List<Usuario>> listarTodos() {
         return ResponseEntity.status(HttpStatus.OK).body(usuarioService.listarTodos());
     }
@@ -35,10 +35,19 @@ public class UsuarioController {
     @GetMapping("/{id}")
     public ResponseEntity<Object> buscarId(@PathVariable(value = "id") Long id) {
         Optional<Usuario> optionalUsuario = usuarioService.buscarId(id);
-        System.out.println(optionalUsuario);
         if (!optionalUsuario.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario não encontrado!");
         }
         return ResponseEntity.status(HttpStatus.OK).body(optionalUsuario.get());
+    }
+
+    @DeleteMapping("/deletar/{id}")
+    public ResponseEntity<Object> DeletarUsuario(@PathVariable(value = "id") Long id) {
+        Optional<Usuario> optionalUsuario = usuarioService.buscarId(id);
+        if (!optionalUsuario.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario não encontrado!");
+        }
+        usuarioService.deletarUsuario(optionalUsuario.get());
+        return ResponseEntity.status(HttpStatus.OK).body("Usuario deletado com sucesso");
     }
 }
